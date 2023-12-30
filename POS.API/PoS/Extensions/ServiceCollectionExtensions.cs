@@ -10,6 +10,8 @@ namespace PoS.Extensions
             services.AddSingleton(configuration);
 
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IItemRepository, ItemRepository>();
 
             return services;
         }
