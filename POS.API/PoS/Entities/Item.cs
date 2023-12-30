@@ -7,17 +7,14 @@ namespace PoS.Entities
     {
         public Item()
         {
-            Orders = new List<Order>();
         }
 
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public ItemType Type { get; set; }
-        public decimal Price { get; set; }
+        public decimal PPU { get; set; } // price per unit
         public int Stock { get; set; }
         
-        [JsonIgnore]
-        public virtual ICollection<Order> Orders { get; set; }
     }
 }

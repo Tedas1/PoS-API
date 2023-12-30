@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PoS.Abstractions.Repositories.EntityRepositories;
+using PoS.Dto;
 using PoS.Entities;
 
 namespace PoS.Controllers
@@ -10,13 +11,16 @@ namespace PoS.Controllers
     {
         private readonly IItemRepository _itemRepository;
         private readonly IOrderRepository _orderRepository;
+        private readonly IItemOrderRepository _itemOrderRepository;
 
         public ItemController(
             IItemRepository itemRepository,
-            IOrderRepository orderRepository)
+            IOrderRepository orderRepository,
+            IItemOrderRepository itemOrderRepository)
         {
             _itemRepository = itemRepository;
             _orderRepository = orderRepository;
+            _itemOrderRepository = itemOrderRepository;
         }
 
         [HttpGet]
@@ -59,14 +63,41 @@ namespace PoS.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Assigns an item to a specific order.
+        /// </summary>
+        /// <remarks>Assign method!</remarks>
+        /// <response code="200">Item Assigned</response>
+        /// <response code="409">Item Not Assigned</response>
         [HttpPost("{orderId}")]
-        public async Task<IActionResult> AssignItemToOrder([FromBody] Item item, Guid orderId)
+        public async Task<IActionResult> AssignItemToOrder([FromBody] ItemQuantityDto itemQuantity, Guid orderId)
         {
-            if (await _orderRepository.Any(x => x.Id == orderId))
-            {
+            bool assigned = await _itemRepository.AssignItemToOrder(itemQuantity, orderId);
 
-            }
-            return Ok();
+            return assigned ? Ok() : Conflict();
+        }
+
+        [HttpGet("{orderId}")]
+        public async Task<IActionResult> GetOrderItems(Guid orderId)
+        {
+            //if (await _orderRepository.Any(x => x.Id == orderId))
+            //{
+            //    ICollection<Item> items = await _orderRepository.GetOrderItems(orderId);
+            //    return Ok(items);
+            //}
+            return NotFound();
+        }
+
+        [HttpPut("{orderId}/{itemId}")]
+        public async Task<IActionResult> UpdateOrderItem(Guid orderId, Guid itemId)
+        {
+            return NotFound();
+        }
+
+        [HttpDelete("{orderId}/{itemId}")]
+        public async Task<IActionResult> DeleteItemFromOrder(Guid orderId, Guid itemId)
+        {
+            return NotFound();
         }
     }
 }

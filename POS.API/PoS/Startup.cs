@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PoS.Abstractions;
 using PoS.Data;
-using PoS.Entities;
 using PoS.Extensions;
-using System.Text.Json.Serialization;
 
 namespace PoS
 {
@@ -19,7 +17,11 @@ namespace PoS
         {
 
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(c =>
+            {
+                var filePath = Path.Combine(AppContext.BaseDirectory, "PoS.xml");
+                c.IncludeXmlComments(filePath);
+            });
 
             services.AddCors(p =>
                 p.AddPolicy("corsapp", builder => {

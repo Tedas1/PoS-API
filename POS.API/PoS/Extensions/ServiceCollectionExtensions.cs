@@ -12,6 +12,7 @@ namespace PoS.Extensions
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IItemRepository, ItemRepository>();
+            services.AddScoped<IItemOrderRepository, ItemOrderRepository>();
 
             return services;
         }

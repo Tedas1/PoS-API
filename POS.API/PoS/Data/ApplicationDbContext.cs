@@ -12,6 +12,9 @@ namespace PoS.Data
         }
 
         public virtual DbSet<User>? Users { get; set; }
+        public virtual DbSet<Item>? Item { get; set; }
+        public virtual DbSet<Order>? Order { get; set; }
+        public virtual DbSet<ItemOrder>? ItemOrder { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -25,9 +28,8 @@ namespace PoS.Data
             builder.Entity<Order>().HasKey(x => x.Id);
             builder.Entity<Item>().HasKey(x => x.Id);
 
-            builder.Entity<Order>()
-                .HasMany(o => o.Items)
-                .WithMany(i => i.Orders);
+            builder.Entity<ItemOrder>()
+                .HasKey(io => new { io.OrderId, io.ItemId });
         }
     }
 }
