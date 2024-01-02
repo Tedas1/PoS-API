@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PoS.Data;
 
@@ -11,9 +12,10 @@ using PoS.Data;
 namespace PoS.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231230094207_UserOrderItemRelationships")]
+    partial class UserOrderItemRelationships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +23,21 @@ namespace PoS.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("ItemOrder", b =>
+                {
+                    b.Property<Guid>("ItemsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OrdersId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ItemsId", "OrdersId");
+
+                    b.HasIndex("OrdersId");
+
+                    b.ToTable("ItemOrder");
+                });
 
             modelBuilder.Entity("PoS.Entities.Item", b =>
                 {
@@ -36,7 +53,7 @@ namespace PoS.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("PPU")
+                    b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Stock")
@@ -48,24 +65,6 @@ namespace PoS.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Item");
-                });
-
-            modelBuilder.Entity("PoS.Entities.ItemOrder", b =>
-                {
-                    b.Property<Guid>("OrderId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ItemId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("OrderId", "ItemId");
-
-                    b.HasIndex("ItemId");
-
-                    b.ToTable("ItemOrder");
                 });
 
             modelBuilder.Entity("PoS.Entities.Order", b =>
@@ -116,17 +115,17 @@ namespace PoS.Data.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("PoS.Entities.ItemOrder", b =>
+            modelBuilder.Entity("ItemOrder", b =>
                 {
                     b.HasOne("PoS.Entities.Item", null)
                         .WithMany()
-                        .HasForeignKey("ItemId")
+                        .HasForeignKey("ItemsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PoS.Entities.Order", null)
                         .WithMany()
-                        .HasForeignKey("OrderId")
+                        .HasForeignKey("OrdersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
