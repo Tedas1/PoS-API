@@ -30,6 +30,16 @@ namespace PoS.Data
 
             builder.Entity<ItemOrder>()
                 .HasKey(io => new { io.OrderId, io.ItemId });
+
+            builder.Entity<ItemOrder>()
+                .HasOne<Item>()
+                .WithMany()
+                .HasForeignKey(io => io.ItemId);
+
+            builder.Entity<ItemOrder>()
+                .HasOne<Order>()
+                .WithMany()
+                .HasForeignKey(io => io.OrderId);
         }
     }
 }
