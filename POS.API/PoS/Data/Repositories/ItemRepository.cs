@@ -26,8 +26,7 @@ namespace PoS.Data.Repositories
             if (order == null) return false;
             
             Item? item = await Get(x => x.Id == itemQuantity.ItemId);
-            if (item == null) return false;
-           
+            if (item == null || item.Stock < itemQuantity.Quantity) return false;
             
             var itemOrder = await _itemOrderRepository.Get(x => x.ItemId == item.Id && x.OrderId == order.Id);
             if (itemOrder == null)
