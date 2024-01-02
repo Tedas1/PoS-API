@@ -16,6 +16,11 @@ namespace PoS.Controllers
             _userRepository = userRepository;            
         }
 
+        /// <summary>
+        /// Retrieves user
+        /// </summary>
+        /// <response code="200">User retrieved</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("{userId}")]
         public async Task<IActionResult> Get(Guid userId)
         {
@@ -24,6 +29,11 @@ namespace PoS.Controllers
             return Ok(user);
         }
 
+        /// <summary>
+        /// Retrieves all users
+        /// </summary>
+        /// <response code="200">Users retrieved</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
@@ -31,6 +41,11 @@ namespace PoS.Controllers
             return Ok(allUsers);
         }
 
+        /// <summary>
+        /// Creates a user
+        /// </summary>
+        /// <response code="201">Users created</response>
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] User user)
         {
@@ -40,6 +55,13 @@ namespace PoS.Controllers
             return Created("", user);
         }
 
+        /// <summary>
+        /// Updates a user
+        /// </summary>
+        /// <response code="204">User updated</response>
+        /// <response code="409">User id's do not match</response>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [HttpPut("{userId}")]
         public async Task<IActionResult> UpdateUser([FromBody] User user, Guid userId)
         {
@@ -51,6 +73,11 @@ namespace PoS.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Deletes a user
+        /// </summary>
+        /// <response code="204">User Deleted</response>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpDelete("{userId}")]
         public async Task<IActionResult> DeleteUser(Guid userId)
         {

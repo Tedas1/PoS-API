@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using PoS.Enums;
+﻿using PoS.Enums;
+using System.Text.Json.Serialization;
 
 namespace PoS.Entities
 {
