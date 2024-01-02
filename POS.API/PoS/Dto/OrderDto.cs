@@ -1,16 +1,13 @@
-﻿using PoS.Enums;
-using System.Text.Json.Serialization;
+﻿using PoS.Entities;
+using PoS.Enums;
 
-namespace PoS.Entities
+namespace PoS.Dto
 {
-    public class Order
+    public class OrderDto
     {
         public Guid Id { get; set; }
         public decimal TotalAmount { get; set; }
         public OrderStatus Status { get; set; }
         public Guid UserId { get; set; }
-        
-        [JsonIgnore]
-        public User? User { get; set; }
     }
 }
