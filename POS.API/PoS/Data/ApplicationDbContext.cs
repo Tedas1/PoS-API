@@ -18,6 +18,8 @@ namespace PoS.Data
 
         public virtual DbSet<Tip>? Tip { get; set; }
 
+        public virtual DbSet<Tax>? Tax { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -47,6 +49,9 @@ namespace PoS.Data
                 .HasOne<Order>()
                 .WithOne()
                 .HasForeignKey<Tip>(t => t.OrderId);
+
+            builder.Entity<Tax>()
+                .HasKey(t => t.TaxId);
         }
     }
 }
