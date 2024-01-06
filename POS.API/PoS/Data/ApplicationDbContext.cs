@@ -16,6 +16,8 @@ namespace PoS.Data
         public virtual DbSet<Order>? Order { get; set; }
         public virtual DbSet<ItemOrder>? ItemOrder { get; set; }
 
+        public virtual DbSet<Tip>? Tip { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -40,6 +42,11 @@ namespace PoS.Data
                 .HasOne<Order>()
                 .WithMany()
                 .HasForeignKey(io => io.OrderId);
+
+            builder.Entity<Tip>()
+                .HasOne<Order>()
+                .WithOne()
+                .HasForeignKey<Tip>(t => t.OrderId);
         }
     }
 }

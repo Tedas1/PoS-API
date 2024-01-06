@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using PoS.Enums;
+using System.Text.Json.Serialization;
 
 namespace PoS.Entities
 {
@@ -14,6 +15,7 @@ namespace PoS.Entities
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public DateTime DateOfBirth { get; set; }
+        public UserRole Role { get; set; }
         
         [JsonIgnore]
         public virtual ICollection<Order> Orders { get; set; }
