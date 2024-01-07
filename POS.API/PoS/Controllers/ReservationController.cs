@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PoS.Abstractions.Repositories.EntityRepositories;
+using PoS.Dto;
 using PoS.Entities;
 using PoS.Enums;
 
@@ -19,6 +20,30 @@ namespace PoS.Controllers
         {
             _reservationRepository = reservationRepository;
             _userRepository = userRepository;
+        }
+
+        /// <summary>
+        /// Retrieves all free slots by date and employee
+        /// </summary>
+        /// <response code="200">Free slots retrieved</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet("slots/{date}/{employeeId}")]
+        public async Task<IActionResult> GetFreeSlots(Guid employeeId, DateTime date)
+        {
+            var reservations = await _reservationRepository.GetMany(x =>
+                x.Date == date
+                && x.EmployeeId == employeeId);
+
+            var reservedSlots =
+                from reservation in reservations
+                select reservation.TimeSlot;
+
+            // working hours from 9 to 21
+            var allSlots = Enumerable.Range(9, 12);
+
+            var freeSlots = allSlots.Except(reservedSlots);
+
+            return Ok(freeSlots);
         }
 
         /// <summary>
