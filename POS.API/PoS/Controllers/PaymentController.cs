@@ -25,6 +25,7 @@ namespace PoS.Controllers
         /// <response code="201">Created</response>
         /// <response code="400">Order does not exist or the order is paid</response>
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost]
         public async Task<IActionResult> CreatePayment([FromBody] Payment payment)
         {
