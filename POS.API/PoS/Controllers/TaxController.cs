@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PoS.Abstractions.Repositories.EntityRepositories;
-using PoS.Data.Repositories;
 using PoS.Entities;
 
 namespace PoS.Controllers
