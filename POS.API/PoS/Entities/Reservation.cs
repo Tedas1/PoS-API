@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using PoS.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PoS.Entities
 {
@@ -13,5 +14,6 @@ namespace PoS.Entities
 
         public int TimeSlot { get; set; }
         public Guid? OrderId { get; set; }
+        public ReservationStatus Status { get; set; }
     }
 }

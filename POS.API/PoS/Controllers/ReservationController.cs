@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PoS.Abstractions.Repositories.EntityRepositories;
-using PoS.Dto;
 using PoS.Entities;
 using PoS.Enums;
 
@@ -32,7 +31,8 @@ namespace PoS.Controllers
         {
             var reservations = await _reservationRepository.GetMany(x =>
                 x.Date == date
-                && x.EmployeeId == employeeId);
+                && x.EmployeeId == employeeId
+                && x.Status != ReservationStatus.Cancelled);
 
             var reservedSlots =
                 from reservation in reservations
@@ -92,6 +92,30 @@ namespace PoS.Controllers
             await _reservationRepository.Save();
 
             return Created("", reservation);
+        }
+
+        /// <summary>
+        /// Updates a reservation
+        /// </summary>
+        /// <response code="204">Reservation updated</response>
+        /// <response code="400">Incorrect reservation id</response>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPut("{reservationId}/{status}")]
+        public async Task<IActionResult> UpdateUser(Guid reservationId, ReservationStatus status)
+        {
+            var reservation = await _reservationRepository.Get(x => x.Id == reservationId);
+
+            if (reservation == null)
+            {
+                return BadRequest();
+            }
+
+            reservation.Status = status;
+
+            await _reservationRepository.Save();
+
+            return NoContent();
         }
 
         /// <summary>
