@@ -49,6 +49,7 @@ namespace PoS
             services.AddDependencies(Configuration);
         }
 
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
