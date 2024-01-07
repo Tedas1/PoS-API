@@ -21,6 +21,8 @@ namespace PoS.Data
         public virtual DbSet<Tax>? Tax { get; set; }
         public virtual DbSet<Payment>? Payment { get; set; }
 
+        public virtual DbSet<Reservation>? Reservation { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -59,6 +61,21 @@ namespace PoS.Data
                 .WithOne()
                 .HasForeignKey<Payment>(t => t.OrderId);
 
+            builder.Entity<Reservation>()
+                .HasOne<User>()
+                .WithMany()
+                .HasForeignKey(r => r.CustomerId);
+
+            builder.Entity<Reservation>()
+                .HasOne<User>()
+                .WithMany()
+                .HasForeignKey(r => r.EmployeeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Reservation>()
+                .HasOne<Order>()
+                .WithMany()
+                .HasForeignKey(r => r.OrderId);
         }
     }
 }
