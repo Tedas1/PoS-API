@@ -12,7 +12,6 @@ namespace PoS.Entities
         public DateTime Date {  get; set; }
 
         public int TimeSlot { get; set; }
-        public int? ServiceId { get; set; }
         public Guid? OrderId { get; set; }
     }
 }
