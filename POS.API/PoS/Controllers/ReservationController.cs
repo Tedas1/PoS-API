@@ -55,9 +55,9 @@ namespace PoS.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var reservations = await _reservationRepository.Get(x => x.Id == id);
+            var reservation = await _reservationRepository.Get(x => x.Id == id);
 
-            return Ok(reservations);
+            return Ok(reservation);
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace PoS.Controllers
         /// <response code="204">Reservation deleted</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpDelete("{reservationId}")]
-        public async Task<IActionResult> DeleteUser(Guid reservationId)
+        public async Task<IActionResult> DeleteReservation(Guid reservationId)
         {
             if (await _reservationRepository.Any(x => x.Id == reservationId))
             {
