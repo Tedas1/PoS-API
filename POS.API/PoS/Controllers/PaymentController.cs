@@ -12,6 +12,7 @@ namespace PoS.Controllers
     {
         private readonly IPaymentRepository _paymentRepository;
         private readonly IOrderRepository _orderRepository;
+       
         public PaymentController(IPaymentRepository paymentRepository, IOrderRepository orderRepository)
         {
             _paymentRepository = paymentRepository;
@@ -22,7 +23,7 @@ namespace PoS.Controllers
         /// Creates a payment
         /// </summary>
         /// <response code="201">Created</response>
-        /// <response code ="400">Order does not exist or the order is paid</response>
+        /// <response code="400">Order does not exist or the order is paid</response>
         [ProducesResponseType(StatusCodes.Status201Created)]
         [HttpPost]
         public async Task<IActionResult> CreatePayment([FromBody] Payment payment)
@@ -43,7 +44,7 @@ namespace PoS.Controllers
         }
 
         /// <summary>
-        /// Retrieves all pay,ents
+        /// Retrieves all payments
         /// </summary>
         /// <response code="200">Retrieved</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -59,7 +60,6 @@ namespace PoS.Controllers
         /// Retrieves a payment
         /// </summary>
         /// <response code="200">Retrieved</response>
-        /// <response code="204">No Content</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("{paymnetId}")]
         public async Task<IActionResult> GetPayment(Guid paymnetId)
@@ -100,10 +100,7 @@ namespace PoS.Controllers
                 await _paymentRepository.Delete(x => x.PaymentId == paymentId);
                 await _paymentRepository.Save();
             }
-
             return NoContent();
         }
-
-
     }
 }
