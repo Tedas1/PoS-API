@@ -47,32 +47,6 @@ namespace PoS.Controllers
         }
 
         /// <summary>
-        /// Retrieves all reservations by date
-        /// </summary>
-        /// <response code="200">Reservations retrieved</response>
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [HttpGet("date/{date}")]
-        public async Task<IActionResult> GetByDate(DateTime date)
-        {
-            var reservations = await _reservationRepository.GetMany(x => x.Date == date);
-
-            return Ok(reservations);
-        }
-
-        /// <summary>
-        /// Retrieves all reservations by employee
-        /// </summary>
-        /// <response code="200">Reservations retrieved</response>
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [HttpGet("employee/{employeeId}")]
-        public async Task<IActionResult> GetByEmployee(Guid employeeId)
-        {
-            var reservations = await _reservationRepository.GetMany(x => x.EmployeeId == employeeId);
-
-            return Ok(reservations);
-        }
-
-        /// <summary>
         /// Retrieves reservation
         /// </summary>
         /// <response code="200">Reservation retrieved</response>
