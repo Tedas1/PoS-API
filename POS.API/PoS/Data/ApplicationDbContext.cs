@@ -19,6 +19,7 @@ namespace PoS.Data
         public virtual DbSet<Tip>? Tip { get; set; }
 
         public virtual DbSet<Tax>? Tax { get; set; }
+        public virtual DbSet<Payment>? Payment { get; set; }
 
         public virtual DbSet<Reservation>? Reservation { get; set; }
 
@@ -54,6 +55,11 @@ namespace PoS.Data
 
             builder.Entity<Tax>()
                 .HasKey(t => t.TaxId);
+
+            builder.Entity<Payment>()
+                .HasOne<Order>()
+                .WithOne()
+                .HasForeignKey<Payment>(t => t.OrderId);
 
             builder.Entity<Reservation>()
                 .HasOne<User>()
