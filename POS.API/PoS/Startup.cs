@@ -12,6 +12,7 @@ namespace PoS
         {
             Configuration = configuration;
         }
+        
 
         public void ConfigureServices(IServiceCollection services)
         {
