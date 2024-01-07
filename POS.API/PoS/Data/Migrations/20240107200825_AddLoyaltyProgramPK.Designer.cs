@@ -12,8 +12,8 @@ using PoS.Data;
 namespace PoS.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240107124040_CreatePayment")]
-    partial class CreatePayment
+    [Migration("20240107200825_AddLoyaltyProgramPK")]
+    partial class AddLoyaltyProgramPK
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -68,6 +68,24 @@ namespace PoS.Data.Migrations
                     b.HasIndex("ItemId");
 
                     b.ToTable("ItemOrder");
+                });
+
+            modelBuilder.Entity("PoS.Entities.LoyaltyProgram", b =>
+                {
+                    b.Property<Guid>("ProgramId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PointsAcquired")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProgramId");
+
+                    b.ToTable("LoyaltyPrograms");
                 });
 
             modelBuilder.Entity("PoS.Entities.Order", b =>

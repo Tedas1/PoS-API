@@ -68,6 +68,24 @@ namespace PoS.Data.Migrations
                     b.ToTable("ItemOrder");
                 });
 
+            modelBuilder.Entity("PoS.Entities.LoyaltyProgram", b =>
+                {
+                    b.Property<Guid>("ProgramId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PointsAcquired")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProgramId");
+
+                    b.ToTable("LoyaltyPrograms");
+                });
+
             modelBuilder.Entity("PoS.Entities.Order", b =>
                 {
                     b.Property<Guid>("Id")

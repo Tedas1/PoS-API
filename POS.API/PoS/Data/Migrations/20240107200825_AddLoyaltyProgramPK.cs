@@ -5,10 +5,23 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PoS.Data.Migrations
 {
-    public partial class CreatePayment : Migration
+    public partial class AddLoyaltyProgramPK : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "LoyaltyPrograms",
+                columns: table => new
+                {
+                    ProgramId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PointsAcquired = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LoyaltyPrograms", x => x.ProgramId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Payment",
                 columns: table => new
@@ -39,6 +52,9 @@ namespace PoS.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "LoyaltyPrograms");
+
             migrationBuilder.DropTable(
                 name: "Payment");
         }

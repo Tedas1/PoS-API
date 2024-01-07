@@ -20,6 +20,7 @@ namespace PoS.Data
 
         public virtual DbSet<Tax>? Tax { get; set; }
         public virtual DbSet<Payment>? Payment { get; set; }
+        public virtual DbSet<LoyaltyProgram>? LoyaltyPrograms { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -58,6 +59,9 @@ namespace PoS.Data
                 .HasOne<Order>()
                 .WithOne()
                 .HasForeignKey<Payment>(t => t.OrderId);
+
+            builder.Entity<LoyaltyProgram>()
+                .HasKey(lp => lp.ProgramId);
 
         }
     }

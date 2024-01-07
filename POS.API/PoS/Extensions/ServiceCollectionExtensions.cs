@@ -16,6 +16,7 @@ namespace PoS.Extensions
             services.AddScoped<ITipRepository, TipRepository>();
             services.AddScoped<ITaxRepository, TaxRepository>();
             services.AddScoped<IPaymentRepository, PaymentRepository>();
+            services.AddScoped<ILoyaltyProgramRepository, LoyaltyProgramRepository>();
 
             return services;
         }
