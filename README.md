@@ -13,17 +13,25 @@
 
 - Created pivot table with additional field to track of how many `items` are used in particular `order`.
 
+---
+
 ### LoyaltyProgram Entity
 
 - Added userId to LoyaltyProgram as the loyalty program is assigned to the user upon loyalty program's creation.
+
+---
 
 ### Tax Entity
 
 - Added a tax entity which contains taxId, desciption and percentage of the tax.
 
+---
+
 ### TaxOrder Entity
 
 - Created a pivot table which tracks different taxes applied to the order.
+
+---
 
 ### Tip Entity
 
