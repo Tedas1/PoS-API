@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PoS.Abstractions.Repositories.EntityRepositories;
+using PoS.Dto;
 using PoS.Entities;
 
 namespace PoS.Controllers
@@ -22,19 +23,31 @@ namespace PoS.Controllers
         /// </summary>
         /// <response code="201">Created</response>
         /// <response code="400">Order does not exist or the order is paid</response>
+        /// <response code="409">Wrong amount to be paid</response>
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [HttpPost]
         public async Task<IActionResult> CreatePayment([FromBody] Payment payment)
         {
-            if (!(await _orderRepository.Any(o => o.Id == payment.OrderId)))
+            var order = await _orderRepository.Get(o => o.Id == payment.OrderId);
+            if (order == null) return BadRequest();
+
+            if (await _paymentRepository.Any(p => p.OrderId == payment.OrderId)) return BadRequest();
+
+            var invoice = await _orderRepository.GetOrderInvoiceAsync(order);
+            if (invoice != null)
             {
-                return BadRequest();
+                if (payment.Amount < invoice.Order.TotalAmount) return Conflict();
+
+                if (payment.PaymentType == Enums.PaymentType.Cash)
+                {
+                    payment.Change = Math.Round(payment.Amount - invoice.Order.TotalAmount);
+                }
             }
-            if (await _paymentRepository.Any(p => p.OrderId == payment.OrderId))
-            {
-                return BadRequest();
-            }
+
+            order.Status = Enums.OrderStatus.Completed;
+            await _orderRepository.Save();
 
             await _paymentRepository.Create(payment);
             await _paymentRepository.Save();
@@ -60,10 +73,10 @@ namespace PoS.Controllers
         /// </summary>
         /// <response code="200">Retrieved</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [HttpGet("{paymnetId}")]
-        public async Task<IActionResult> GetPayment(Guid paymnetId)
+        [HttpGet("{paymentId}")]
+        public async Task<IActionResult> GetPayment(Guid paymentId)
         {
-            var payment = await _paymentRepository.Get(p => p.PaymentId == paymnetId);
+            var payment = await _paymentRepository.Get(p => p.PaymentId == paymentId);
 
             return Ok(payment);
         }

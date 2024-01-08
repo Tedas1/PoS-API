@@ -49,6 +49,35 @@ namespace PoS.Data.Repositories
                 items.Add(new ItemCountPriceDto(item.Id, item.PPU, itemOrder.Quantity));
                 totalSum += itemOrder.Quantity * item.PPU;
             }
+            
+            // Taxes and their sums
+            IEnumerable<TaxOrder> orderTaxes = await _taxOrderRepository.GetMany(x => x.OrderId == order.Id);
+
+            List<Tax> taxes = new List<Tax>();
+            decimal taxesPercentSum = 0;
+            foreach (TaxOrder taxOrder in orderTaxes)
+            {
+                Tax tax = await _taxRepository.Get(x => x.TaxId == taxOrder.TaxId) ?? new Tax();
+                taxes.Add(tax);
+                taxesPercentSum += tax.Percentage;
+            }
+
+            totalSum += taxesPercentSum * totalSum / 100;
+
+            // Loyalty Programs and their sums
+            var loyaltyProgram = await _loyaltyProgramRepository.Get(x => x.UserId == order.UserId);
+
+            if (loyaltyProgram != null)
+            {
+                if (loyaltyProgram.PointsAcquired > totalSum)
+                {
+                    totalSum = 0;
+                }
+                else
+                {
+                    totalSum -= loyaltyProgram.PointsAcquired;
+                }
+            }
 
             // Tips and their sums
             IEnumerable<Tip> orderTips = await _tipRepository.GetMany(x => x.OrderId == order.Id);
@@ -57,27 +86,11 @@ namespace PoS.Data.Repositories
 
             totalSum += tipSum;
 
-            // Loyalty Programs and their sums
-            IEnumerable<LoyaltyProgram> loyaltyPrograms = await _loyaltyProgramRepository.GetMany(x => x.UserId == order.UserId);
 
-            var loyaltySum = loyaltyPrograms.Sum(x => x.PointsAcquired);
-            totalSum += loyaltySum;
+            order.TotalAmount = Math.Round(totalSum, 2);
+            
 
-
-            // Taxes and their sums
-            IEnumerable<TaxOrder> orderTaxes = await _taxOrderRepository.GetMany(x => x.OrderId == order.Id);
-
-            List<Tax> taxes = new List<Tax>();
-            foreach (TaxOrder taxOrder in orderTaxes)
-            {
-                Tax tax = await _taxRepository.Get(x => x.TaxId == taxOrder.TaxId) ?? new Tax();
-                taxes.Add(tax);
-                totalSum -= (tax.Percentage / 100) * totalSum;
-            }
-
-            order.TotalAmount = totalSum;
-
-            return new InvoiceDto(order, items, taxes, orderTips, loyaltyPrograms);
+            return new InvoiceDto(order, items, taxes, orderTips, loyaltyProgram);
         }
     }
 }
