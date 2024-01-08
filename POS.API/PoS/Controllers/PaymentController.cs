@@ -11,11 +11,16 @@ namespace PoS.Controllers
     {
         private readonly IPaymentRepository _paymentRepository;
         private readonly IOrderRepository _orderRepository;
+        private readonly IReservationRepository _reservationRepository;
        
-        public PaymentController(IPaymentRepository paymentRepository, IOrderRepository orderRepository)
+        public PaymentController(
+            IPaymentRepository paymentRepository,
+            IOrderRepository orderRepository,
+            IReservationRepository reservationRepository)
         {
             _paymentRepository = paymentRepository;
             _orderRepository = orderRepository;
+            _reservationRepository = reservationRepository;
         }
 
         /// <summary>
@@ -49,6 +54,13 @@ namespace PoS.Controllers
             order.Status = Enums.OrderStatus.Completed;
             await _orderRepository.Save();
 
+            var allReservations = await _reservationRepository.GetMany(x => x.OrderId == order.Id && x.Status == Enums.ReservationStatus.Pending);
+            foreach(var reservation in allReservations)
+            {
+                reservation.Status = Enums.ReservationStatus.Completed;
+            }
+
+            await _reservationRepository.Save();
             await _paymentRepository.Create(payment);
             await _paymentRepository.Save();
 

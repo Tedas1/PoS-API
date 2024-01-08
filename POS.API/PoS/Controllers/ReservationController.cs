@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PoS.Abstractions.Repositories.EntityRepositories;
+using PoS.Data.Repositories;
 using PoS.Entities;
 using PoS.Enums;
 
@@ -44,6 +45,20 @@ namespace PoS.Controllers
             var freeSlots = allSlots.Except(reservedSlots);
 
             return Ok(freeSlots);
+        }
+
+
+        /// <summary>
+        /// Retrieves all pending reservations
+        /// </summary>
+        /// <response code="200">Reservations retrieved</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet]
+        public async Task<IActionResult> GetAllPendingReservations()
+        {
+            var allReservations = await _reservationRepository.GetMany(x => x.Status == ReservationStatus.Pending);
+            
+            return Ok(allReservations);
         }
 
         /// <summary>
@@ -99,7 +114,7 @@ namespace PoS.Controllers
         /// Updates a reservation
         /// </summary>
         /// <response code="204">Reservation updated</response>
-        /// <response code="400">Incorrect reservation id</response>
+        /// <response code="400">Incorrect reservation id or reservation is cancelled</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPut("{reservationId}/{status}")]
@@ -107,7 +122,7 @@ namespace PoS.Controllers
         {
             var reservation = await _reservationRepository.Get(x => x.Id == reservationId);
 
-            if (reservation == null)
+            if (reservation == null || reservation.Status == ReservationStatus.Cancelled)
             {
                 return BadRequest();
             }
