@@ -36,3 +36,9 @@
 ### Tip Entity
 
 - Added a tip entity which contains id of the tip, orderId and tip amount.
+
+---
+
+### Payment entity 
+
+- Removed the option 'other' as a payment method as it is not clearly defined in the API and not mentioned in the document.
