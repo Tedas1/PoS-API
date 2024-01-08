@@ -83,7 +83,8 @@ namespace PoS.Controllers
             if (await _reservationRepository.Any(x =>
                 x.Date == reservation.Date
                 && x.TimeSlot == reservation.TimeSlot
-                && x.EmployeeId == reservation.EmployeeId))
+                && x.EmployeeId == reservation.EmployeeId
+                && x.Status != ReservationStatus.Cancelled))
             {
                 return Conflict();
             }
@@ -102,7 +103,7 @@ namespace PoS.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPut("{reservationId}/{status}")]
-        public async Task<IActionResult> UpdateUser(Guid reservationId, ReservationStatus status)
+        public async Task<IActionResult> UpdateReservation(Guid reservationId, ReservationStatus status)
         {
             var reservation = await _reservationRepository.Get(x => x.Id == reservationId);
 
