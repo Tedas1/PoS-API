@@ -119,5 +119,22 @@ namespace PoS.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Provides detailed receipt with taxes, tips and loyalty program points calculated
+        /// </summary>
+        /// <response code="201">Invoice Provided</response>
+        /// <response code="400">Order Does not Exist</response>
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpGet("{orderId}/invoice")]
+        public async Task<IActionResult> RequestInvoiceForOrder(Guid orderId)
+        {
+            var order = await _orderRepository.Get(x => x.Id == orderId);
+
+            if (order == null) return BadRequest();
+
+            return Ok(await _orderRepository.GetOrderInvoiceAsync(order));
+        }
     }
 }
