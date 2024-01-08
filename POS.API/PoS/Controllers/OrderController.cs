@@ -127,7 +127,7 @@ namespace PoS.Controllers
         /// <response code="400">Order Does not Exist</response>
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPost("{orderId}/invoice")]
+        [HttpGet("{orderId}/invoice")]
         public async Task<IActionResult> RequestInvoiceForOrder(Guid orderId)
         {
             var order = await _orderRepository.Get(x => x.Id == orderId);
