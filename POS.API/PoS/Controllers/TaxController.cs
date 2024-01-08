@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PoS.Abstractions.Repositories.EntityRepositories;
+using PoS.Data.Repositories;
+using PoS.Dto;
 using PoS.Entities;
 
 namespace PoS.Controllers
@@ -65,8 +67,8 @@ namespace PoS.Controllers
         [HttpPut("{taxId}")]
         public async Task<IActionResult> UpdateTax([FromBody] Tax tax, Guid taxId)
         {
-            if(tax.TaxId != taxId)
-            {   
+            if (tax.TaxId != taxId)
+            {
                 return Conflict();
             }
             _taxRepository.Update(tax);
@@ -83,12 +85,27 @@ namespace PoS.Controllers
         [HttpDelete("{taxId}")]
         public async Task<IActionResult> DeleteTax(Guid taxId)
         {
-            if(await _taxRepository.Any(t => t.TaxId == taxId))
+            if (await _taxRepository.Any(t => t.TaxId == taxId))
             {
                 await _taxRepository.Delete(t => t.TaxId == taxId);
                 await _taxRepository.Save();
             }
             return NoContent();
+        }
+
+        /// <summary>
+        /// Assigns tax to a specific order.
+        /// </summary>
+        /// <response code="200">Tax Assigned</response>
+        /// <response code="409">Tax Not Assigned</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [HttpPost("{orderId}")]
+        public async Task<IActionResult> AssignTaxToOrder([FromBody] TaxOrderDto taxOrderDto, Guid orderId)
+        {
+            bool assigned = await _taxRepository.AssignTaxToOrder(taxOrderDto, orderId);
+
+            return assigned ? Ok() : Conflict();
         }
     }
 }
