@@ -64,10 +64,10 @@ namespace PoS.Controllers
         /// <response code="409">Loyalty program's ids do not match</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        [HttpPut("{userId}/{programId}")]
-        public async Task<IActionResult> UpdateLoyaltyProgram([FromBody] LoyaltyProgram loyaltyProgram, Guid programId, Guid userId)
+        [HttpPut("{programId}")]
+        public async Task<IActionResult> UpdateLoyaltyProgram([FromBody] LoyaltyProgram loyaltyProgram, Guid programId)
         {
-            if (loyaltyProgram.ProgramId != programId || loyaltyProgram.UserId != userId)
+            if (loyaltyProgram.ProgramId != programId)
             {
                 return Conflict();
             }
