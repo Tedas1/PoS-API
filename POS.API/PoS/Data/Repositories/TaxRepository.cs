@@ -31,7 +31,6 @@ namespace PoS.Data.Repositories
 
             await _taxOrderRepository.Create(new TaxOrder(tax.TaxId, order.Id));
 
-            await Save();
             await _taxOrderRepository.Save();
 
             return true;
