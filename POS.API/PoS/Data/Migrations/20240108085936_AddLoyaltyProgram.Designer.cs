@@ -12,8 +12,8 @@ using PoS.Data;
 namespace PoS.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240107124040_CreatePayment")]
-    partial class CreatePayment
+    [Migration("20240108085936_AddLoyaltyProgram")]
+    partial class AddLoyaltyProgram
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -70,6 +70,30 @@ namespace PoS.Data.Migrations
                     b.ToTable("ItemOrder");
                 });
 
+            modelBuilder.Entity("PoS.Entities.LoyaltyProgram", b =>
+                {
+                    b.Property<Guid>("ProgramId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PointsAcquired")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ProgramId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("LoyaltyPrograms");
+                });
+
             modelBuilder.Entity("PoS.Entities.Order", b =>
                 {
                     b.Property<Guid>("Id")
@@ -116,6 +140,41 @@ namespace PoS.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Payment");
+                });
+
+            modelBuilder.Entity("PoS.Entities.Reservation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<Guid>("EmployeeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TimeSlot")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("Reservation");
                 });
 
             modelBuilder.Entity("PoS.Entities.Tax", b =>
@@ -200,6 +259,15 @@ namespace PoS.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PoS.Entities.LoyaltyProgram", b =>
+                {
+                    b.HasOne("PoS.Entities.User", null)
+                        .WithOne()
+                        .HasForeignKey("PoS.Entities.LoyaltyProgram", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("PoS.Entities.Order", b =>
                 {
                     b.HasOne("PoS.Entities.User", "User")
@@ -218,6 +286,25 @@ namespace PoS.Data.Migrations
                         .HasForeignKey("PoS.Entities.Payment", "OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("PoS.Entities.Reservation", b =>
+                {
+                    b.HasOne("PoS.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PoS.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PoS.Entities.Order", null)
+                        .WithMany()
+                        .HasForeignKey("OrderId");
                 });
 
             modelBuilder.Entity("PoS.Entities.Tip", b =>

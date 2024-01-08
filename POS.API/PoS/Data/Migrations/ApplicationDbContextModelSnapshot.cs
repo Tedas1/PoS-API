@@ -68,6 +68,30 @@ namespace PoS.Data.Migrations
                     b.ToTable("ItemOrder");
                 });
 
+            modelBuilder.Entity("PoS.Entities.LoyaltyProgram", b =>
+                {
+                    b.Property<Guid>("ProgramId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PointsAcquired")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ProgramId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("LoyaltyPrograms");
+                });
+
             modelBuilder.Entity("PoS.Entities.Order", b =>
                 {
                     b.Property<Guid>("Id")
@@ -229,6 +253,15 @@ namespace PoS.Data.Migrations
                     b.HasOne("PoS.Entities.Order", null)
                         .WithMany()
                         .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PoS.Entities.LoyaltyProgram", b =>
+                {
+                    b.HasOne("PoS.Entities.User", null)
+                        .WithOne()
+                        .HasForeignKey("PoS.Entities.LoyaltyProgram", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
