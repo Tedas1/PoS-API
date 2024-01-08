@@ -95,6 +95,8 @@ namespace PoS.Controllers
         [HttpPost("{orderId}")]
         public async Task<IActionResult> AssignItemToOrder([FromBody] ItemQuantityDto itemQuantity, Guid orderId)
         {
+            if (!await _orderRepository.Any(x => x.Id == orderId)) return Conflict();
+
             bool assigned = await _itemRepository.AssignItemToOrder(itemQuantity, orderId);
 
             return assigned ? Ok() : Conflict();

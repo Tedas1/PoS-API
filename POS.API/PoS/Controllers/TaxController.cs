@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PoS.Abstractions.Repositories.EntityRepositories;
-using PoS.Data.Repositories;
 using PoS.Dto;
 using PoS.Entities;
 
@@ -11,11 +10,14 @@ namespace PoS.Controllers
     public class TaxController : ControllerBase
     {
         private readonly ITaxRepository _taxRepository;
+        private readonly IOrderRepository _orderRepository;
 
         public TaxController(
-            ITaxRepository taxRepository)
+            ITaxRepository taxRepository,
+            IOrderRepository orderRepository)
         {
             _taxRepository = taxRepository;
+            _orderRepository = orderRepository;
         }
 
         /// <summary>
@@ -103,6 +105,8 @@ namespace PoS.Controllers
         [HttpPost("{orderId}")]
         public async Task<IActionResult> AssignTaxToOrder([FromBody] TaxOrderDto taxOrderDto, Guid orderId)
         {
+            if (!await _orderRepository.Any(x => x.Id == orderId)) return Conflict();
+
             bool assigned = await _taxRepository.AssignTaxToOrder(taxOrderDto, orderId);
 
             return assigned ? Ok() : Conflict();

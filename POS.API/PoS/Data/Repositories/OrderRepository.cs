@@ -9,10 +9,10 @@ namespace PoS.Data.Repositories
     {
         private readonly IItemOrderRepository _itemOrderRepository;
         private readonly ITaxOrderRepository _taxOrderRepository;
-        private readonly IItemRepository _itemRepository;
         private readonly ITaxRepository _taxRepository;
         private readonly ILoyaltyProgramRepository _loyaltyProgramRepository;
         private readonly ITipRepository _tipRepository;
+        private readonly IItemRepository _itemRepository;
 
         public OrderRepository(
             IApplicationDbContext context,
@@ -26,14 +26,14 @@ namespace PoS.Data.Repositories
         {
             _itemOrderRepository = itemOrderRepository;
             _taxOrderRepository = taxOrderRepository;
-            _itemRepository = itemRepository;
             _taxRepository = taxRepository;
             _loyaltyProgramRepository = loyaltyProgramRepository;
             _tipRepository = tipRepository;
+            _itemRepository = itemRepository;
         }
-        
-        
-        
+
+
+
         public async Task<InvoiceDto> GetOrderInvoiceAsync(Order order)
         {
             decimal totalSum = 0;
@@ -43,7 +43,7 @@ namespace PoS.Data.Repositories
             IEnumerable<ItemOrder> itemOrders = await _itemOrderRepository.GetMany(x => x.OrderId == order.Id);
 
             List<ItemCountPriceDto> items = new List<ItemCountPriceDto>();
-            foreach(ItemOrder itemOrder in itemOrders)
+            foreach (ItemOrder itemOrder in itemOrders)
             {
                 Item item = await _itemRepository.Get(x => x.Id == itemOrder.ItemId) ?? new Item();
                 items.Add(new ItemCountPriceDto(item.Id, item.PPU, itemOrder.Quantity));
@@ -52,23 +52,23 @@ namespace PoS.Data.Repositories
 
             // Tips and their sums
             IEnumerable<Tip> orderTips = await _tipRepository.GetMany(x => x.OrderId == order.Id);
-            
+
             var tipSum = orderTips.Sum(x => x.Amount);
 
             totalSum += tipSum;
-            
+
             // Loyalty Programs and their sums
             IEnumerable<LoyaltyProgram> loyaltyPrograms = await _loyaltyProgramRepository.GetMany(x => x.UserId == order.UserId);
 
             var loyaltySum = loyaltyPrograms.Sum(x => x.PointsAcquired);
             totalSum += loyaltySum;
-            
+
 
             // Taxes and their sums
             IEnumerable<TaxOrder> orderTaxes = await _taxOrderRepository.GetMany(x => x.OrderId == order.Id);
 
             List<Tax> taxes = new List<Tax>();
-            foreach(TaxOrder taxOrder in orderTaxes)
+            foreach (TaxOrder taxOrder in orderTaxes)
             {
                 Tax tax = await _taxRepository.Get(x => x.TaxId == taxOrder.TaxId) ?? new Tax();
                 taxes.Add(tax);
