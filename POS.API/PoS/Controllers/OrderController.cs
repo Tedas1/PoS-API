@@ -119,5 +119,18 @@ namespace PoS.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Provides detailed receipt with taxes, tips and loyalty program points calculated
+        /// </summary>
+        /// <response code="201">Invoice Provided</response>
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [HttpPost("{orderId}/invoice")]
+        public async Task<IActionResult> RequestInvoiceForOrder(Guid orderId)
+        {
+            Order order = await _orderRepository.Get(x => x.Id == orderId) ?? new Order();
+
+            return Ok(await _orderRepository.GetOrderInvoiceAsync(order));
+        }
     }
 }
