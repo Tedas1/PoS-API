@@ -42,3 +42,10 @@
 ### Payment entity 
 
 - Removed the option 'other' as a payment method as it is not clearly defined in the API and not mentioned in the document.
+
+---
+
+### Reservation Entity
+
+- Replaced `isCancelled` with `status` field to provide more detail and allow for scalability.
+- `dateTime` is split into two fields: `date` and `timeSlot`. `date` represents the reservation date. The `timeSlot` value represents the reserved time slot. Each business decides for itself how many slots it needs and how to number them. For this example, the schedule consists of slots numbered 9 through 20 (12 slots in total), with each slot representing a 1-hour reservation between 9:00 and 21:00.
