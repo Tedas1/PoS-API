@@ -20,6 +20,7 @@ namespace PoS.Data
 
         public virtual DbSet<Tax>? Tax { get; set; }
         public virtual DbSet<Payment>? Payment { get; set; }
+        public virtual DbSet<LoyaltyProgram>? LoyaltyPrograms { get; set; }
 
         public virtual DbSet<Reservation>? Reservation { get; set; }
 
@@ -61,6 +62,7 @@ namespace PoS.Data
                 .WithOne()
                 .HasForeignKey<Payment>(t => t.OrderId);
 
+
             builder.Entity<Reservation>()
                 .HasOne<User>()
                 .WithMany()
@@ -76,6 +78,14 @@ namespace PoS.Data
                 .HasOne<Order>()
                 .WithMany()
                 .HasForeignKey(r => r.OrderId);
+
+            builder.Entity<LoyaltyProgram>()
+                .HasKey(lp => lp.ProgramId);
+
+            builder.Entity<LoyaltyProgram>()
+                .HasOne<User>()
+                .WithOne()
+                .HasForeignKey<LoyaltyProgram>(t => t.UserId);
         }
     }
 }
